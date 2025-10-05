@@ -99,7 +99,7 @@ def generate_problem_patern7():
     """(x+y+a)(x²+y²+a²-xy-ay-ax) の形式の問題を生成する関数"""
     a = random.randint(2, 9)
     problem = f'(x + y + {a})(x² + y² + {a*a} - xy - {a}y - {a}x)'
-    answer = f'x³ + y³ + {a**3} - {3*a}xy'
+    answer = f'x³ + y³ - {3*a}xy + {a**3}'
     return problem, answer
 
 problem_generators = [generate_problem, generate_problem_patern2, generate_problem_patern3, generate_problem_patern4, generate_problem_patern5, generate_problem_patern6, generate_problem_patern7]
