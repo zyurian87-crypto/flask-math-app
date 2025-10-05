@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang='ja'>
+<head>
+    <meta charset='UTF-8'>
+    <title>３乗の展開プリント</title>
+    <style>
+            
+        body {font-family: 'UD デジタル N-B', sans-serif; }
+    .container { width: 180mm; margin: 20mm auto; }
+    h1 {text-align: center; border-bottom: 2px solid black; padding-bottom: 10px; }
+    .meta { display: flex; justify-content: space-between; font-size: 1.2em; margin-bottom: 20px; }
+    .answer-list { column-count: 2; font-size: 1.1em; }
+    .page-break{
+        break-before: page;
+    }
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <h1> 3乗の展開 </h1>
+
+        <form method="post">
+            <label for="num_problems">問題を何問にしますか？:</label>
+            <input type='number' id='num_problems' name='num_problems' value='10' miin='1' max='100'>
+            <input type="submit" value="プリント作成">
+        </form>
+        <hr>
+
+        {% if problems %}
+            <div class="meta"><span>名前:______________</span><span>点数:_____</span><span>かかった時間____分_______秒</span></div>
+            <p class="instruction">以下の式を展開しなさい。</p>
+            <ol class="question=list"
+                {% for q in problems %}
+                    <li class="question-item">{{ q }} =</li>
+                {% endfor %}
+            </ol>
+
+            <div class="page-break"></div>
+            <h1>答え</h1>
+            <ol class="answer-list">
+                {% for ans in answers %}
+                    <li>{{ ans }}</li>
+                {% endfor %}
+            </ol>
+        {% endif %}
+    </div>
+</body>
+</html>
