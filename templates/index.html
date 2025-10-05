@@ -29,11 +29,11 @@
         {% if problems %}
             <div class="meta"><span>名前:______________</span><span>点数:_____</span><span>かかった時間____分_______秒</span></div>
             <p class="instruction">以下の式を展開しなさい。</p>
-            <ol class="question=list"
+            <ul class="question=list"
                 {% for q in problems %}
                     <li class="question-item">{{ q }} =</li>
                 {% endfor %}
-            </ol>
+            </ul>
 
             <div class="page-break"></div>
             <h1>答え</h1>
