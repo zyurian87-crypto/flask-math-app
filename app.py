@@ -21,7 +21,6 @@ def generate_problem():
         problem = f'(x - {-a})³'
     else:
         problem = f'(x + {a})³'
-
     #解答を計算(展開公式: (x + a)³ = x³ + 3ax² + 3a²x + a³)
     #  x³の係数
     coeff3 = 1
@@ -31,11 +30,8 @@ def generate_problem():
     coeff1 = 3 * (a**2)
     #  定数項
     const = a**3
-
     answer = f'x³ + ({coeff2}x² + ({coeff1})x + ({const}))'
-    
     answer = answer.replace('+ (-', '- ').replace(')', '').replace('(', '')
-
     return problem, answer
 
 def generate_problem_patern2():
@@ -85,7 +81,7 @@ def generate_problem_patern5():
     return problem, answer
 
 def generate_problem_patern6():
-    """(x - a)³ の形式の問題を生成する関数"""
+    """(x - a)³ の形式の問題"""
     a = random.randint(2, 10) # 正の整数aを使う
     problem = f'(x - {a})³'
     # 解答を計算: (x - a)³ = x³ - 3ax² + 3a²x - a³
@@ -96,13 +92,30 @@ def generate_problem_patern6():
     return problem, answer
 
 def generate_problem_patern7():
-    """(x+y+a)(x²+y²+a²-xy-ay-ax) の形式の問題を生成する関数"""
+    """(x+y+a)(x²+y²+a²-xy-ay-ax) の形式の問題"""
     a = random.randint(2, 9)
     problem = f'(x + y + {a})(x² + y² + {a*a} - xy - {a}y - {a}x)'
     answer = f'x³ + y³ - {3*a}xy + {a**3}'
     return problem, answer
 
-problem_generators = [generate_problem, generate_problem_patern2, generate_problem_patern3, generate_problem_patern4, generate_problem_patern5, generate_problem_patern6, generate_problem_patern7]
+def division_problem_patern1():
+    a = random.randint(2, 10)
+    problem = f'(x³ + {a**3}) ÷ (x+{a})'
+    answer = f'(x² - {a}x + {a**2})'
+    return problem, answer
+
+def division_problem_patern2():
+    a = random.randint(2, 10)
+    problem = f'(x³ + {a**3}) ÷ (x² - {a}x + {a**2})'
+    answer = f'(x+{a})'
+    return problem, answer
+
+
+cubed_expansion_generators = [generate_problem, generate_problem_patern2, generate_problem_patern3, generate_problem_patern4, generate_problem_patern5, generate_problem_patern6, generate_problem_patern7]
+
+division_generators = [division_problem_patern1, division_problem_patern2]
+
+all_generators = cubed_expansion_generators + division_generators
 
 app = Flask(__name__)
 @app.route('/', methods=['GET', 'POST'])
@@ -111,6 +124,8 @@ def index():
 
     problems = None
     answers = None
+    num_problems = 10
+    selected_genre = 'cubed'
     if request.method == 'POST':
 
         problems = []
@@ -118,19 +133,32 @@ def index():
 
         try:
             問題数 = int(request.form.get('num_problems', 10))
+            selected_genre = request.form.get('genre', 'cubed')
+
+            if selected_genre == 'cubed':
+                generators = cubed_expansion_generators
+            elif selected_genre == 'division':
+                generators = division_generators
+            else: # 'mixed'が選択された場合
+                generators = all_generators
 
             for i in range(問題数):
-                chosen_generator = random.choice(problem_generators)
+                chosen_generator = random.choice(generators)
                 problem, answer = chosen_generator()
                 problems.append(f'({i+1}) {problem} ')
                 answers.append(f'({i+1}) {answer}')
 
-
-        except ValueError:
+        except (ValueError, IndexError):
             問題数 = 10
+            problems = None
+            answers = None
     
 
-    return render_template('index.html', title=title, problems=problems, answers=answers)
+    return render_template('index.html', 
+                           title=title, 
+                           problems=problems, 
+                           answers=answers,
+                           selected_genre=selected_genre)
 
 if __name__ =='__main__':
     app.run(port=8000, debug=True)

@@ -2,7 +2,7 @@
 <html lang='ja'>
 <head>
     <meta charset='UTF-8'>
-    <title>３乗の展開プリント</title>
+    <title>高校の計算プリント</title>
     <style>
 
         body {font-family: 'UD デジタル N-B', sans-serif; }
@@ -28,12 +28,28 @@
 </head>
 <body>
     <div class='container'>
-        <h1> 3乗の展開 </h1>
+        <h1> 高校の計算プリント </h1>
 
         <form method="post">
-            <label for="num_problems">問題を何問にしますか？:</label>
-            <input type='number' id='num_problems' name='num_problems' value='10' miin='1' max='100'>
-            <input type="submit" value="プリント作成">
+            <label for="num_problems">問題を何問にしますか？</label>
+            <input type='number' id='num_problems' name='num_problems' value='10' min='1' max='100'>
+
+            <fieldset style='margin-top:15px; border: 1px solid #ccc; padding: 10px; border-radius: 5px;'>
+                <legend>問題のジャンルを選択:</legend>
+                <div style="margin-bottom: 5px;">
+                    <input type="radio" id="genre_cubed" name="genre" value="cubed" {% if selected_genre == 'cubed' %}checked{% endif %}>
+                    <label for="genre_cubed">３乗の展開</label>
+                </div>
+                <div style="margin-bottom: 5px;">
+                    <input type="radio" id="genre_division" name="genre" value="division" {% if selected_genre == 'division' %}checked{% endif %}>
+                    <label for="genre_division">文字式の割り算</label>
+                </div>
+                <div>
+                    <input type='radio' id='genre_mixed' name='genre' value='mixed' {% if selected_genre == 'mixed' %}checked{% endif %}>
+                    <label for='genre_mixed'>ミックス（両方から出題）</label>
+                </div>
+            </fieldset>
+            <input type="submit" value="プリント作成" style='margin-top: 15px; padding: 5px 10px;'>
         </form>
         <hr>
 
@@ -55,5 +71,6 @@
             </ol>
         {% endif %}
     </div>
+
 </body>
 </html>
