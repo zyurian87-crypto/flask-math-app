@@ -128,27 +128,54 @@ def index():
     selected_genre = 'cubed'
     if request.method == 'POST':
 
-        problems = []
-        answers = []
+        problems_list = []
+        answers_list = []
 
         try:
             問題数 = int(request.form.get('num_problems', 10))
             selected_genre = request.form.get('genre', 'cubed')
-
+    
             if selected_genre == 'cubed':
-                generators = cubed_expansion_generators
+                target_generators = cubed_expansion_generators
+                num_patterns = len(target_generators)
+                if num_patterns == 0: raise IndexError('問題パターンがありません')
+
+                base_count = 問題数 // num_patterns
+                remainder = 問題数 % num_patterns
+
+                temp_generators = []
+                for i in range(num_patterns):
+                    count = base_count
+                    if i < remainder:
+                        count += 1
+                    temp_generators.extend([target_generators[i]] * count)
+                random.shuffle(temp_generators)
+
+                for generator_func in temp_generators:
+                    problem, answer = generator_func()
+                    problems_list.append(problem)
+                    answers_list.append(answer)
+
             elif selected_genre == 'division':
-                generators = division_generators
+
+                for i in range(問題数):
+                    chosen_generator = random.choice(division_generators)
+                    problem, answer = chosen_generator()
+                    problems_list.append(problem)
+                    answers_list.append(answer)
+
             else: # 'mixed'が選択された場合
-                generators = all_generators
+                for i in range(問題数):
+                    chosen_generator = random.choice(all_generators)
+                    problem, answer = chosen_generator()
+                    problems_list.append(problem)
+                    answers_list.append(answer)
+            
+            problems = [f'({i+1}){p}' for i, p in enumerate(problems_list)]
+            answers = [f'({i+1}){a}' for i, a in enumerate(answers_list)]
 
-            for i in range(問題数):
-                chosen_generator = random.choice(generators)
-                problem, answer = chosen_generator()
-                problems.append(f'({i+1}) {problem} ')
-                answers.append(f'({i+1}) {answer}')
-
-        except (ValueError, IndexError):
+        except (ValueError, IndexError) as e:
+            print(f'エラーが発生しました: {e}')
             問題数 = 10
             problems = None
             answers = None
